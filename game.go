@@ -29,7 +29,7 @@ func (g *Game) IsBlackTurn() bool {
 	return g.WhosTurn().id == g.black.id
 }
 
-func (g *Game) Move(chessman MoveChessman, newX, newY int) error {
+func (g *Game) Move(chessman IChessman, newX, newY int) error {
 	// See if chessman can move onto the new position
 	if g.validateNewPosition(chessman, newX, newY) == false {
 		// return error
@@ -42,20 +42,20 @@ func (g *Game) Move(chessman MoveChessman, newX, newY int) error {
 }
 
 // validateNewPosition of the chessman, return true if the new position is valid from the chessman point of view
-func (g *Game) validateNewPosition(chessman MoveChessman, x, y int) bool {
-	validXs := chessman.GetValidXMoves()
-	validYs := chessman.GetValidYMoves()
+func (g *Game) validateNewPosition(chessman IChessman, x, y int) bool {
+	// validXs := chessman.GetValidXMoves()
+	// validYs := chessman.GetValidYMoves()
 
-	for _, validY := range validYs {
-		for _, validX := range validXs {
-			if validX == x && validY == y {
-				return true
-			}
-		}
-	}
+	// for _, validY := range validYs {
+	// 	for _, validX := range validXs {
+	// 		if validX == x && validY == y {
+	// 			return true
+	// 		}
+	// 	}
+	// }
 	return false
 }
 
-func (g *Game) validatePath(chessman MoveChessman, x, y int) bool {
+func (g *Game) validatePath(chessman IChessman, x, y int) bool {
 	return true
 }
