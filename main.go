@@ -4,7 +4,7 @@ import "fmt"
 
 // main function
 func main() {
-	rook := NewRook(black, 1, 3)
-	fmt.Println(rook.GetValidMoves())
+	king := NewKing(black, 4, 2)
+	fmt.Println(king.GetValidMoves())
 	// fmt.Println(rook.GetValidTakes())
 }

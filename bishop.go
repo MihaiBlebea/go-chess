@@ -20,12 +20,40 @@ func (b *Bishop) UpdateY(y int) {
 // GetValidMoves returns a slice of possible valid positions to move
 func (b *Bishop) GetValidMoves() []Position {
 	var positions []Position
-	for y := b.y; y < 9; y++ {
-		positions = append(positions, Position{b.x + 1, b.y + 1})
+	// Go top right
+	x := b.x
+	y := b.y
+	for x < 8 && y < 8 {
+		x++
+		y++
+		positions = append(positions, Position{x, y})
 	}
 
-	for x := b.y; x > 1; x-- {
-		positions = append(positions, Position{b.x - 1, b.y - 1})
+	// Go top left
+	x = b.x
+	y = b.y
+	for x > 1 && y < 8 {
+		x--
+		y++
+		positions = append(positions, Position{x, y})
+	}
+
+	// Go bottom right
+	x = b.x
+	y = b.y
+	for x < 8 && y > 1 {
+		x++
+		y--
+		positions = append(positions, Position{x, y})
+	}
+
+	// Go bottom left
+	x = b.x
+	y = b.y
+	for x > 1 && y > 1 {
+		x--
+		y--
+		positions = append(positions, Position{x, y})
 	}
 	return positions
 }
