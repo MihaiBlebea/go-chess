@@ -8,13 +8,6 @@ import (
 	"errors"
 )
 
-// Chessman
-// type Chessman struct {
-// 	id       string
-// 	color    Color
-// 	position Position
-// }
-
 type Chessman interface {
 	GetValidMoves() []Position
 	GetValidTakes() []Position
@@ -38,7 +31,6 @@ func New(name, color string, x, y int) (Chessman, error) {
 	default:
 		return nil, errors.New("Color is undefined. Please choose between `white` or `black`") 
 	}
-
 
 	switch name {
 	case "pawn":
