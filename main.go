@@ -1,10 +1,26 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"go-chess/chessmen"
+	"log"
+)
+
+
+type Color interface {
+	
+}
+
+type Position interface {
+}
+
 
 // main function
 func main() {
-	king := NewKing(black, 4, 2)
-	fmt.Println(king.GetValidMoves())
+	queen, err := chessmen.New("queen", "white", 1, 1)
+	if err != nil {
+		log.Panic(err)
+	}
+	fmt.Println(queen.GetValidMoves())
 	// fmt.Println(rook.GetValidTakes())
 }

@@ -1,28 +1,42 @@
-package main
+package chessmen
 
 
 type Bishop struct {
-	*Chessman
+	id string
+	position Position
+	color Color
 }
 
-func NewBishop(color Color, x, y int) *Bishop {
-	return &Bishop{NewChessman(color, x, y)}
+func (b Bishop) UpdateX(x int) {
+	b.position.x = x
 }
 
-func (b *Bishop) UpdateX(x int) {
-	b.x = x
+func (b Bishop) UpdateY(y int) {
+	b.position.y = y
 }
 
-func (b *Bishop) UpdateY(y int) {
-	b.y = y
+func (b Bishop) Equal(biship *Bishop) bool {
+	return b.id == biship.id
+}
+
+func (b Bishop) GetId() string {
+	return b.id
+}
+
+func (b Bishop) GetX() int {
+	return b.position.x
+}
+
+func (b Bishop) GetY() int {
+	return b.position.y
 }
 
 // GetValidMoves returns a slice of possible valid positions to move
-func (b *Bishop) GetValidMoves() []Position {
+func (b Bishop) GetValidMoves() []Position {
 	var positions []Position
 	// Go top right
-	x := b.x
-	y := b.y
+	x := b.position.x
+	y := b.position.y
 	for x < 8 && y < 8 {
 		x++
 		y++
@@ -30,8 +44,8 @@ func (b *Bishop) GetValidMoves() []Position {
 	}
 
 	// Go top left
-	x = b.x
-	y = b.y
+	x = b.position.x
+	y = b.position.y
 	for x > 1 && y < 8 {
 		x--
 		y++
@@ -39,8 +53,8 @@ func (b *Bishop) GetValidMoves() []Position {
 	}
 
 	// Go bottom right
-	x = b.x
-	y = b.y
+	x = b.position.x
+	y = b.position.y
 	for x < 8 && y > 1 {
 		x++
 		y--
@@ -48,8 +62,8 @@ func (b *Bishop) GetValidMoves() []Position {
 	}
 
 	// Go bottom left
-	x = b.x
-	y = b.y
+	x = b.position.x
+	y = b.position.y
 	for x > 1 && y > 1 {
 		x--
 		y--
@@ -59,6 +73,6 @@ func (b *Bishop) GetValidMoves() []Position {
 }
 
 // GetValidTakes returns a slice of possible valid positions to move and capture the enemy chessman
-func (b *Bishop) GetValidTakes() []Position {
+func (b Bishop) GetValidTakes() []Position {
 	return b.GetValidMoves()
 }
