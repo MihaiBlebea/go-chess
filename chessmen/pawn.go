@@ -80,3 +80,29 @@ func (p Pawn) GetValidTakes() []Position {
 	}
 	return positions
 }
+
+func (p Pawn) Perform(action Action) {
+	// Validate move
+	for _, pos := range(p.GetValidMoves()) {
+		if pos.Equal(position)
+		{
+
+		}
+	}
+
+	// Move chessman to position
+}
+
+
+type Action interface {
+	Execute() error
+}
+
+type Move struct {
+	start Position
+	end Position
+}
+
+func (m Move) GetBetweenPositions() {
+	
+}
