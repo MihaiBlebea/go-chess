@@ -21,8 +21,8 @@ func (b *Board) Reset() {
 	b.spots[0][0] = Spot{Rook{ White }, Position{0, 0}}
 	b.spots[1][0] = Spot{Knight{ White }, Position{1, 0}}
 	b.spots[2][0] = Spot{Bishop{ White }, Position{2, 0}}
-	b.spots[3][0] = Spot{nil, Position{3, 0}}
-	b.spots[4][0] = Spot{nil, Position{4, 0}}
+	b.spots[3][0] = Spot{Queen{ White }, Position{3, 0}}
+	b.spots[4][0] = Spot{King{ White }, Position{4, 0}}
 	b.spots[5][0] = Spot{Bishop{ White }, Position{5, 0}}
 	b.spots[6][0] = Spot{Knight{ White }, Position{6, 0}}
 	b.spots[7][0] = Spot{Rook{ White }, Position{7, 0}}
@@ -46,8 +46,8 @@ func (b *Board) Reset() {
 	b.spots[0][7] = Spot{Rook{ Black }, Position{0, 7}}
 	b.spots[1][7] = Spot{Knight{ Black }, Position{1, 7}}
 	b.spots[2][7] = Spot{Bishop{ Black }, Position{2, 7}}
-	b.spots[3][7] = Spot{nil, Position{3, 7}}
-	b.spots[4][7] = Spot{nil, Position{4, 7}}
+	b.spots[3][7] = Spot{Queen{ Black }, Position{3, 7}}
+	b.spots[4][7] = Spot{King{ Black }, Position{4, 7}}
 	b.spots[5][7] = Spot{Bishop{ Black }, Position{5, 7}}
 	b.spots[6][7] = Spot{Knight{ Black }, Position{6, 7}}
 	b.spots[7][7] = Spot{Rook{ Black }, Position{7, 7}}

@@ -33,12 +33,14 @@ func (p *Position) GetY() int {
 type Chessman interface {
 	CanMove(board *Board, start, end *Spot) bool
 	IsWhite() bool
+	IsTaken() bool
 }
 
 
 //! Pawn
 type Pawn struct {
 	color Color
+	isTaken bool
 }
 
 func (p Pawn) IsWhite() bool {
