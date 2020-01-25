@@ -1,6 +1,5 @@
 package main
 
-
 //! Spot
 type Spot struct {
 	chessman Chessman
@@ -11,25 +10,37 @@ func (s *Spot) GetChessman() Chessman {
 	return s.chessman
 }
 
+func (s *Spot) RemoveChessman() bool {
+	s.chessman = nil
+	return true
+}
 
-//! Board 
+func (s *Spot) AddChessman(chessman *Chessman) bool {
+	if s.chessman != nil {
+		return false
+	}
+	s.chessman = *chessman
+	return true
+}
+
+//! Board
 type Board struct {
 	spots [8][8]Spot
 }
 
 func (b *Board) Reset() {
-	b.spots[0][0] = Spot{Rook{ White }, Position{0, 0}}
-	b.spots[1][0] = Spot{Knight{ White }, Position{1, 0}}
-	b.spots[2][0] = Spot{Bishop{ White }, Position{2, 0}}
-	b.spots[3][0] = Spot{Queen{ White }, Position{3, 0}}
-	b.spots[4][0] = Spot{King{ White }, Position{4, 0}}
-	b.spots[5][0] = Spot{Bishop{ White }, Position{5, 0}}
-	b.spots[6][0] = Spot{Knight{ White }, Position{6, 0}}
-	b.spots[7][0] = Spot{Rook{ White }, Position{7, 0}}
+	b.spots[0][0] = Spot{Rook{White}, Position{0, 0}}
+	b.spots[1][0] = Spot{Knight{White}, Position{1, 0}}
+	b.spots[2][0] = Spot{Bishop{White}, Position{2, 0}}
+	b.spots[3][0] = Spot{Queen{White}, Position{3, 0}}
+	b.spots[4][0] = Spot{King{White}, Position{4, 0}}
+	b.spots[5][0] = Spot{Bishop{White}, Position{5, 0}}
+	b.spots[6][0] = Spot{Knight{White}, Position{6, 0}}
+	b.spots[7][0] = Spot{Rook{White}, Position{7, 0}}
 
 	for x := 0; x < 8; x++ {
-		b.spots[x][1] = Spot{Pawn{ White }, Position{x, 1}}
-		b.spots[x][6] = Spot{Pawn{ Black }, Position{x, 6}}
+		b.spots[x][1] = Spot{Pawn{White}, Position{x, 1}}
+		b.spots[x][6] = Spot{Pawn{Black}, Position{x, 6}}
 	}
 
 	for y := 2; y < 6; y++ {
@@ -43,17 +54,34 @@ func (b *Board) Reset() {
 		b.spots[7][y] = Spot{nil, Position{7, y}}
 	}
 
-	b.spots[0][7] = Spot{Rook{ Black }, Position{0, 7}}
-	b.spots[1][7] = Spot{Knight{ Black }, Position{1, 7}}
-	b.spots[2][7] = Spot{Bishop{ Black }, Position{2, 7}}
-	b.spots[3][7] = Spot{Queen{ Black }, Position{3, 7}}
-	b.spots[4][7] = Spot{King{ Black }, Position{4, 7}}
-	b.spots[5][7] = Spot{Bishop{ Black }, Position{5, 7}}
-	b.spots[6][7] = Spot{Knight{ Black }, Position{6, 7}}
-	b.spots[7][7] = Spot{Rook{ Black }, Position{7, 7}}
+	b.spots[0][7] = Spot{Rook{Black}, Position{0, 7}}
+	b.spots[1][7] = Spot{Knight{Black}, Position{1, 7}}
+	b.spots[2][7] = Spot{Bishop{Black}, Position{2, 7}}
+	b.spots[3][7] = Spot{Queen{Black}, Position{3, 7}}
+	b.spots[4][7] = Spot{King{Black}, Position{4, 7}}
+	b.spots[5][7] = Spot{Bishop{Black}, Position{5, 7}}
+	b.spots[6][7] = Spot{Knight{Black}, Position{6, 7}}
+	b.spots[7][7] = Spot{Rook{Black}, Position{7, 7}}
 }
 
-func (b *Board) GetSpot(x, y int) Spot {
-	return b.spots[x][y]
+func (b *Board) GetSpot(x, y int) *Spot {
+	return &b.spots[x][y]
 }
 
+func (b *Board) Move(start, end Position) bool {
+	startSpot := b.GetSpot(start.GetX(), start.GetY())
+	endSpot := b.GetSpot(end.GetX(), end.GetY())
+
+	chessman := startSpot.GetChessman()
+
+	result := chessman.CanMove(b, startSpot, endSpot)
+
+	if result == false {
+		return false
+	}
+
+	startSpot.RemoveChessman()
+	endSpot.AddChessman(&chessman)
+
+	return true
+}

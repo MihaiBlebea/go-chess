@@ -28,19 +28,15 @@ func (p *Position) GetY() int {
 	return p.y
 }
 
-
 //! Chessmen interface
 type Chessman interface {
 	CanMove(board *Board, start, end *Spot) bool
 	IsWhite() bool
-	IsTaken() bool
 }
-
 
 //! Pawn
 type Pawn struct {
 	color Color
-	isTaken bool
 }
 
 func (p Pawn) IsWhite() bool {
@@ -48,7 +44,6 @@ func (p Pawn) IsWhite() bool {
 }
 
 func (p Pawn) CanMove(board *Board, start, end *Spot) bool {
-
 	// Check if the end spot has a piece of the same color
 	if end.GetChessman() != nil && end.GetChessman().IsWhite() == p.color.isWhite() {
 		return false
@@ -68,7 +63,6 @@ func (p Pawn) CanMove(board *Board, start, end *Spot) bool {
 		return y == 1
 	}
 }
-
 
 //! Rook
 type Rook struct {
@@ -97,7 +91,6 @@ func (r Rook) CanMove(board *Board, start, end *Spot) bool {
 	return false
 }
 
-
 //! Knight
 type Knight struct {
 	color Color
@@ -117,9 +110,8 @@ func (k Knight) CanMove(board *Board, start, end *Spot) bool {
 	// Check if it can move in the end position
 	x := end.position.GetX() - start.position.GetX()
 	y := end.position.GetY() - start.position.GetY()
-	return x * y == 2
+	return x*y == 2
 }
-
 
 //! Bishop
 type Bishop struct {
@@ -143,7 +135,6 @@ func (b Bishop) CanMove(board *Board, start, end *Spot) bool {
 	return x == y
 }
 
-
 //! King
 type King struct {
 	color Color
@@ -163,9 +154,8 @@ func (k King) CanMove(board *Board, start, end *Spot) bool {
 	// Check if it can move in the end position
 	x := math.Abs(float64(end.position.GetX() - start.position.GetX()))
 	y := math.Abs(float64(end.position.GetY() - start.position.GetY()))
-	return x + y == 1
+	return x+y == 1
 }
-
 
 //! Queen
 type Queen struct {
