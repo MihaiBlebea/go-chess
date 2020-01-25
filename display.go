@@ -10,14 +10,13 @@ import (
 )
 
 func render(board *Board) string {
-	
 	var result string
 	for row := 0; row < 10; row++ {
 		if row == 0 || row == 9 {
 			result += "    | A | B | C | D | E | F | G | H |    " + "\n"
 		} else {
 
-			line := fmt.Sprintf("| %d |", 9-row)
+			line := fmt.Sprintf("| %d |", row)
 			for col := 0; col < 8; col++ {
 				// Logic to display the chessmen
 				spot := board.GetSpot(col, row-1)
@@ -33,7 +32,7 @@ func render(board *Board) string {
 
 				line += " " + chessmanSign + " |"
 			}
-			line += fmt.Sprintf(" %d |", 9-row)
+			line += fmt.Sprintf(" %d |", row)
 
 			result += line + "\n"
 		}
