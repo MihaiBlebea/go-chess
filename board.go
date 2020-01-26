@@ -83,19 +83,31 @@ func (b *Board) Move(start, end Position) bool {
 	startSpot := b.GetSpot(start.GetX(), start.GetY())
 	endSpot := b.GetSpot(end.GetX(), end.GetY())
 
-	chessman := startSpot.GetChessman()
+	startPositionChessman := startSpot.GetChessman()
+	// endPositionChessman := endSpot.GetChessman()
 
-	result := chessman.CanMove(b, startSpot, endSpot)
+	result := startPositionChessman.CanMove(b, startSpot, endSpot)
 	if result == false {
 		return false
 	}
 
-	//! this has to be an atomical operation like a transaction that can be rolled back if any errors
-	startSpot.RemoveChessman()
-	_, err := endSpot.AddChessman(&chessman)
-	if err != nil {
-		log.Panic(err)
+	// This is a capture
+	if endSpot.HasChessman() {
+		endSpot.RemoveChessman()
+		_, err := endSpot.AddChessman(&startPositionChessman)
+		if err != nil {
+			log.Panic(err)
+		}
+		startSpot.RemoveChessman()
+	} else {
+		
+		// This is a move
+		//! this has to be an atomical operation like a transaction that can be rolled back if any errors
+		startSpot.RemoveChessman()
+		_, err := endSpot.AddChessman(&startPositionChessman)
+		if err != nil {
+			log.Panic(err)
+		}
 	}
-
 	return true
 }

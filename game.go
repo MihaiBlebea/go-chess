@@ -23,35 +23,37 @@ type Game struct {
 	playerBlack string
 	round int
 	stage Stage
+	board *Board
 }
 
-func NewGame() *Game {
+func Create(white, black string) *Game {
+	return &Game{white, black, 0, StartGame, &Board{}}
+}
 
-	game := Game{"Mihai", "Serban", 0, StartGame}
+func (g *Game) Play() {
 
-	board := Board{}
-	board.Reset()
+	g.board.Reset()
 
 	reader := bufio.NewReader(os.Stdin)
 
-	for game.stage != GameOver {
-		switch game.stage {
+	for g.stage != GameOver {
+		switch g.stage {
 		case StartGame:
 			fmt.Println("StartGame")
-			game.stage = StartTurn
+			g.stage = StartTurn
 			
 		case StartTurn:
-			fmt.Printf("StartTurn %d", game.round)
+			fmt.Printf("StartTurn %d", g.round)
 
 			fmt.Println("")
-			display := render(&board)
+			display := render(g.board)
 			fmt.Print(display)
 
-			game.stage = CheckChess
+			g.stage = CheckChess
 
 		case CheckChess:
 			fmt.Println("CheckChess")
-			game.stage = MoveChessman
+			g.stage = MoveChessman
 
 		case MoveChessman:
 			fmt.Println("MoveChessman")
@@ -74,9 +76,9 @@ func NewGame() *Game {
 				log.Panic(err)
 			}
 			
-			res := board.Move(Position{startX, startY}, Position{endX, endY})
+			res := g.board.Move(Position{startX, startY}, Position{endX, endY})
 			if res == true {
-				game.stage = EndTurn
+				g.stage = EndTurn
 			}
 
 			fmt.Println("Something went wrong, try again")
@@ -84,10 +86,9 @@ func NewGame() *Game {
 		case EndTurn:
 			fmt.Println("EndTurn")
 
-			game.round++
+			g.round++
 
-			game.stage = StartTurn
+			g.stage = StartTurn
 		}
 	}
-	return &game
 }

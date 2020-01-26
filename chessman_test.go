@@ -39,6 +39,14 @@ func TestPawnMovementCorrect( t *testing.T) {
 	if res != true {
 		t.Errorf("Black Pawn should be able to move 1 space in front beyong the middle of the board")
 	}
+
+	// Black Pawn captures a Black Pawn
+	board.Move(Position{4, 6}, Position{4, 4})
+	board.Move(Position{5, 1}, Position{5, 3})
+	res = board.Move(Position{4, 4}, Position{5, 3})
+	if res != true {
+		t.Errorf("Black Pawn should be able to capture an white pawn if it's situated one space across from it")
+	}
 }
 
 func TestPawnMovementWrong( t *testing.T) {
