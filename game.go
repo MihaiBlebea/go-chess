@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"log"
 )
 
 type Stage int
@@ -59,24 +60,19 @@ func NewGame() *Game {
 			start, _ := reader.ReadString('\n')
 
 			// Validate the player input
-
 			startX, startY, err := TransformPosition(start)
 			if err != nil {
 				//
 			}
-			fmt.Println(startX, startY)
 
 			fmt.Print("Where do you want to move it: ")
 			end, _ := reader.ReadString('\n')
-			fmt.Println(end)
 
 			// Validate the player input
-
 			endX, endY, err := TransformPosition(end)
 			if err != nil {
-				//
+				log.Panic(err)
 			}
-			fmt.Println(endX, endY)
 			
 			res := board.Move(Position{startX, startY}, Position{endX, endY})
 			if res == true {
@@ -93,6 +89,5 @@ func NewGame() *Game {
 			game.stage = StartTurn
 		}
 	}
-
 	return &game
 }

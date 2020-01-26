@@ -73,7 +73,7 @@ func (b *Board) Move(start, end Position) bool {
 	endSpot := b.GetSpot(end.GetX(), end.GetY())
 
 	chessman := startSpot.GetChessman()
-
+	
 	result := chessman.CanMove(b, startSpot, endSpot)
 
 	if result == false {

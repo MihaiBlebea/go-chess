@@ -7,40 +7,42 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"regexp"
 )
 
 func render(board *Board) string {
 	var result string
-	for row := 0; row < 10; row++ {
-		if row == 0 || row == 9 {
-			result += "    | A | B | C | D | E | F | G | H |    " + "\n"
-		} else {
 
-			line := fmt.Sprintf("| %d |", row)
-			for col := 0; col < 8; col++ {
-				// Logic to display the chessmen
-				spot := board.GetSpot(col, row-1)
-				chessman := spot.GetChessman()
+	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
+	result += "-----------------------------------------\n"
 
-				var chessmanSign string
-				if chessman != nil {
-					name := reflect.TypeOf(chessman).Name()
-					chessmanSign = GetEmoticon(name, chessman.IsWhite())
-				} else {
-					chessmanSign = " "
-				}
+	for row := 8; row > 0; row-- {
+	
+		line := fmt.Sprintf("| %d |", row)
+		for col := 0; col < 8; col++ {
+			// Logic to display the chessmen
+			spot := board.GetSpot(col, row - 1)
+			chessman := spot.GetChessman()
 
-				line += " " + chessmanSign + " |"
+			var chessmanSign string
+			if chessman != nil {
+				name := reflect.TypeOf(chessman).Name()
+				chessmanSign = GetEmoticon(name, chessman.IsWhite())
+			} else {
+				chessmanSign = " "
 			}
-			line += fmt.Sprintf(" %d |", row)
 
-			result += line + "\n"
+			line += " " + chessmanSign + " |"
 		}
-		if row != 9 {
-			result += "-----------------------------------------\n"
-		}
+		line += fmt.Sprintf(" %d |", row)
+
+		result += line + "\n"
+
+		result += "-----------------------------------------\n"
 	}
 
+	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
+	
 	return result
 
 	// 	return `
@@ -104,39 +106,55 @@ func GetEmoticon(chessmanName string, isWhite bool) string {
 	}
 }
 
-func TransformPosition(code string) (int, int, error) {
-	// Remove the new line character
-	code = strings.TrimSuffix(code, "\n")
-	
-	// Split the coordonates into x and y
-	coordinates := strings.Split(code, "-")
+func TransformPosition(input string) (int, int, error) {
 
-	if len(coordinates) != 2 {
-		return 0, 0, errors.New("Position transformation went wrong for " + code)
+	defaultErr := errors.New("Position transformation went wrong for " + input)
+
+	// Remove the new line character
+	input = strings.TrimSuffix(input, "\n")
+	
+	// Validate input
+	regexTempl := regexp.MustCompile(`(?m)[A-H]-[1-8]`)
+	inputRegexResult := regexTempl.FindAllString(input, -1)
+	
+	if len(inputRegexResult) < 1 {
+		return 0, 0, defaultErr
 	}
 
-	Y, err := strconv.Atoi(coordinates[1])
+	// Split the coordonates into x and y
+	coordinates := strings.Split(input, "-")
+
+	if len(coordinates) != 2 {
+		return 0, 0, defaultErr
+	}
+
+	y, err := strconv.Atoi(coordinates[1])
 	if err != nil {
 		log.Panic(err)
 	}
+	var x int
+
 	switch coordinates[0] {
 	case "A":
-		return 0, Y - 1, nil
+		x = 0
 	case "B":
-		return 0, Y - 1, nil
+		x = 1
 	case "C":
-		return 0, Y - 1, nil
+		x = 2
 	case "D":
-		return 0, Y - 1, nil
+		x = 3
 	case "E":
-		return 0, Y - 1, nil
+		x = 4
 	case "F":
-		return 0, Y - 1, nil
+		x = 5
 	case "G":
-		return 0, Y - 1, nil
+		x = 6
 	case "H":
-		return 0, Y - 1, nil
+		x = 7
 	default:
-		return 0, 0, nil
+		return 0, 0, defaultErr
 	}
+
+	fmt.Println(input, x, y - 1)
+	return x, y - 1, nil
 }

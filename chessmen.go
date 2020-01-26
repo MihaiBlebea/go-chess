@@ -1,6 +1,9 @@
 package main
 
-import "math"
+import (
+	"math"
+	// "fmt"
+)
 
 //! Color
 type Color int
@@ -50,17 +53,37 @@ func (p Pawn) CanMove(board *Board, start, end *Spot) bool {
 	}
 
 	// Check if it can move in the end position
-	x := end.position.GetX() - start.position.GetX()
-	y := end.position.GetY() - start.position.GetY()
+	x := math.Abs(float64(end.position.GetX() - start.position.GetX()))
+	y := math.Abs(float64(end.position.GetY() - start.position.GetY()))
 
 	if x != 0 {
 		return false
 	}
 
-	if start.position.GetY() < 4 {
-		return y <= 2
+	chessman := start.GetChessman()
+
+	//! Come up with a better rule here for Pawn movement
+	if chessman.IsWhite() {
+		if end.position.GetY() < start.position.GetY() {
+			return false
+		}
+
+		if end.position.GetY() <= 3 {
+			return y <= 2
+		} else {
+			return y == 1
+		}
 	} else {
-		return y == 1
+
+		if end.position.GetY() > start.position.GetY() {
+			return false
+		}
+
+		if end.position.GetY() >= 4 {
+			return y <= 2
+		} else {
+			return y == 1
+		}
 	}
 }
 
@@ -108,8 +131,9 @@ func (k Knight) CanMove(board *Board, start, end *Spot) bool {
 	}
 
 	// Check if it can move in the end position
-	x := end.position.GetX() - start.position.GetX()
-	y := end.position.GetY() - start.position.GetY()
+	x := math.Abs(float64(end.position.GetX() - start.position.GetX()))
+	y := math.Abs(float64(end.position.GetY() - start.position.GetY()))
+
 	return x*y == 2
 }
 
