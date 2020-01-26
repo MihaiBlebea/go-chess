@@ -34,9 +34,26 @@ func (s *Spot) AddChessman(chessman *Chessman) (bool, error) {
 	return true, nil
 }
 
+
+//! Prison
+type Prison struct {
+	captured []Chessman
+}
+
+func (p *Prison) AddChessman(chessman Chessman) {
+	p.captured = append(p.captured, chessman)
+}
+
+func (p *Prison) GetCaptured() []Chessman {
+	return p.captured
+}
+
+
 //! Board
 type Board struct {
 	spots [8][8]Spot
+	whitePrison Prison
+	blackPrison Prison
 }
 
 func (b *Board) Reset() {
@@ -84,7 +101,6 @@ func (b *Board) Move(start, end Position) bool {
 	endSpot := b.GetSpot(end.GetX(), end.GetY())
 
 	startPositionChessman := startSpot.GetChessman()
-	// endPositionChessman := endSpot.GetChessman()
 
 	result := startPositionChessman.CanMove(b, startSpot, endSpot)
 	if result == false {
@@ -99,8 +115,16 @@ func (b *Board) Move(start, end Position) bool {
 			log.Panic(err)
 		}
 		startSpot.RemoveChessman()
+
+		endPositionChessman := endSpot.GetChessman()
+
+		if endPositionChessman.IsWhite() {
+			b.blackPrison.AddChessman(endPositionChessman)
+		} else {
+			b.whitePrison.AddChessman(endPositionChessman)
+		}
 	} else {
-		
+
 		// This is a move
 		//! this has to be an atomical operation like a transaction that can be rolled back if any errors
 		startSpot.RemoveChessman()

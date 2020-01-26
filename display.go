@@ -13,6 +13,14 @@ import (
 func render(board *Board) string {
 	var result string
 
+	// Black prison
+	result += "Prison: "
+	for _, capturedChessman := range(board.whitePrison.GetCaptured()) {
+		chessmanSign := TransformChessmanToSign(capturedChessman)
+		result += chessmanSign + " | "
+	}
+	result += "\n"
+
 	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
 	result += "-----------------------------------------\n"
 
@@ -24,13 +32,7 @@ func render(board *Board) string {
 			spot := board.GetSpot(col, row - 1)
 			chessman := spot.GetChessman()
 
-			var chessmanSign string
-			if chessman != nil {
-				name := reflect.TypeOf(chessman).Name()
-				chessmanSign = GetEmoticon(name, chessman.IsWhite())
-			} else {
-				chessmanSign = " "
-			}
+			chessmanSign := TransformChessmanToSign(chessman)
 
 			line += " " + chessmanSign + " |"
 		}
@@ -41,6 +43,15 @@ func render(board *Board) string {
 	}
 	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
 	
+	// White prison
+	result += "\n"
+	result += "Prison: "
+	for _, capturedChessman := range(board.blackPrison.GetCaptured()) {
+		chessmanSign := TransformChessmanToSign(capturedChessman)
+		result += chessmanSign + " | "
+	}
+	result += "\n"
+
 	return result
 
 	// 	return `
@@ -66,9 +77,17 @@ func render(board *Board) string {
 	// 	`
 }
 
-func GetEmoticon(chessmanName string, isWhite bool) string {
-	if isWhite == true {
-		switch chessmanName {
+
+func TransformChessmanToSign(chessman Chessman) string {
+
+	if chessman == nil {
+		return " "
+	}
+
+	name := reflect.TypeOf(chessman).Name()
+
+	if chessman.IsWhite() == true {
+		switch name {
 		case "Pawn":
 			return "♙"
 		case "Rook":
@@ -86,7 +105,7 @@ func GetEmoticon(chessmanName string, isWhite bool) string {
 		}
 	}
 
-	switch chessmanName {
+	switch name {
 	case "Pawn":
 		return "♟"
 	case "Rook":
