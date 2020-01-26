@@ -11,13 +11,21 @@ func TestPawnMovementCorrect( t *testing.T) {
 	// Move white Pawn 2 spaces in front
 	res := board.Move(Position{0, 1}, Position{0, 3})
 	if res != true {
-		t.Errorf(" White Pawn should be able to move 2 spaces in front if it starts in it's own half of the board")
+		t.Errorf("White Pawn should be able to move 2 spaces in front if it starts in it's own half of the board")
 	}
 
 	// Move white Pawn one space in front beyond the middle of the board
 	res = board.Move(Position{0, 3}, Position{0, 4})
 	if res != true {
 		t.Errorf("White Pawn should be able to move 1 space in front beyong the middle of the board")
+	}
+
+	// White Pawn captures a Black Pawn
+	board.Move(Position{7, 1}, Position{7, 3})
+	board.Move(Position{6, 6}, Position{6, 4})
+	res = board.Move(Position{7, 3}, Position{6, 4})
+	if res != true {
+		t.Errorf("White Pawn should be able to capture an black pawn if it's situated one space across from it")
 	}
 
 	// Move black Pawn 2 spaces in front

@@ -37,10 +37,8 @@ func render(board *Board) string {
 		line += fmt.Sprintf(" %d |", row)
 
 		result += line + "\n"
-
 		result += "-----------------------------------------\n"
 	}
-
 	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
 	
 	return result

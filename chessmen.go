@@ -47,23 +47,32 @@ func (p Pawn) IsWhite() bool {
 }
 
 func (p Pawn) CanMove(board *Board, start, end *Spot) bool {
-	// Check if the end spot has a piece of the same color
-	if end.GetChessman() != nil && end.GetChessman().IsWhite() == p.color.isWhite() {
-		return false
-	}
 
-	// Check if it can move in the end position
+	// Check the absolute difference between start and end positions
 	x := math.Abs(float64(end.position.GetX() - start.position.GetX()))
 	y := math.Abs(float64(end.position.GetY() - start.position.GetY()))
+
+	// Check if this is a capture or a move
+	// If the end spot has a chessman of a different color then yours
+	if end.HasChessman() && end.GetChessman().IsWhite() != p.color.isWhite() {
+		if x == 1 && y == 1 {
+			return true
+		}
+	}
+
+	// Check if the end spot has a chessman on it
+	if end.HasChessman() {
+		return false
+	}
 
 	if x != 0 {
 		return false
 	}
 
-	chessman := start.GetChessman()
+	startSpotChessman := start.GetChessman()
 
 	//! Come up with a better rule here for Pawn movement
-	if chessman.IsWhite() {
+	if startSpotChessman.IsWhite() {
 		if end.position.GetY() < start.position.GetY() {
 			return false
 		}
@@ -99,7 +108,7 @@ func (r Rook) IsWhite() bool {
 func (r Rook) CanMove(board *Board, start, end *Spot) bool {
 
 	// Check if the end spot has a piece of the same color
-	if end.GetChessman() != nil && end.GetChessman().IsWhite() == r.color.isWhite() {
+	if end.HasChessman() {
 		return false
 	}
 
@@ -126,7 +135,7 @@ func (k Knight) IsWhite() bool {
 func (k Knight) CanMove(board *Board, start, end *Spot) bool {
 
 	// Check if the end spot has a piece of the same color
-	if end.GetChessman() != nil && end.GetChessman().IsWhite() == k.color.isWhite() {
+	if end.HasChessman() {
 		return false
 	}
 
@@ -149,7 +158,7 @@ func (b Bishop) IsWhite() bool {
 func (b Bishop) CanMove(board *Board, start, end *Spot) bool {
 
 	// Check if the end spot has a piece of the same color
-	if end.GetChessman() != nil && end.GetChessman().IsWhite() == b.color.isWhite() {
+	if end.HasChessman() {
 		return false
 	}
 
@@ -171,7 +180,7 @@ func (k King) IsWhite() bool {
 func (k King) CanMove(board *Board, start, end *Spot) bool {
 
 	// Check if the end spot has a piece of the same color
-	if end.GetChessman() != nil && end.GetChessman().IsWhite() == k.color.isWhite() {
+	if end.HasChessman() {
 		return false
 	}
 
@@ -193,7 +202,7 @@ func (q Queen) IsWhite() bool {
 func (q Queen) CanMove(board *Board, start, end *Spot) bool {
 
 	// Check if the end spot has a piece of the same color
-	if end.GetChessman() != nil && end.GetChessman().IsWhite() == q.color.isWhite() {
+	if end.HasChessman() {
 		return false
 	}
 

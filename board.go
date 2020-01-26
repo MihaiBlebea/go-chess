@@ -1,26 +1,37 @@
 package main
 
+import (
+	"errors"
+	"log"
+)
+
 //! Spot
 type Spot struct {
 	chessman Chessman
 	position Position
 }
 
+func (s *Spot) HasChessman() bool {
+	return s.chessman != nil
+}
+
 func (s *Spot) GetChessman() Chessman {
 	return s.chessman
 }
 
-func (s *Spot) RemoveChessman() bool {
+func (s *Spot) RemoveChessman() (bool, error) {
 	s.chessman = nil
-	return true
+	return true, nil
 }
 
-func (s *Spot) AddChessman(chessman *Chessman) bool {
-	if s.chessman != nil {
-		return false
+func (s *Spot) AddChessman(chessman *Chessman) (bool, error) {
+	// This is a capture if chessman is of different color
+	if s.HasChessman() {
+		return false, errors.New("There is already a chessman on this spot")
 	}
+
 	s.chessman = *chessman
-	return true
+	return true, nil
 }
 
 //! Board
@@ -73,15 +84,18 @@ func (b *Board) Move(start, end Position) bool {
 	endSpot := b.GetSpot(end.GetX(), end.GetY())
 
 	chessman := startSpot.GetChessman()
-	
-	result := chessman.CanMove(b, startSpot, endSpot)
 
+	result := chessman.CanMove(b, startSpot, endSpot)
 	if result == false {
 		return false
 	}
 
+	//! this has to be an atomical operation like a transaction that can be rolled back if any errors
 	startSpot.RemoveChessman()
-	endSpot.AddChessman(&chessman)
+	_, err := endSpot.AddChessman(&chessman)
+	if err != nil {
+		log.Panic(err)
+	}
 
 	return true
 }
