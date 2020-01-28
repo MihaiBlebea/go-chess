@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"log"
 )
 
 type Stage int
@@ -21,13 +20,17 @@ const (
 type Game struct {
 	playerWhite string
 	playerBlack string
-	round int
-	stage Stage
-	board *Board
+	round       int
+	stage       Stage
+	board       *Board
 }
 
 func Create(white, black string) *Game {
-	return &Game{white, black, 0, StartGame, &Board{}}
+	return &Game{white, black, 1, StartGame, &Board{}}
+}
+
+func (g *Game) IsWhiteTurn() bool {
+	return g.round%2 != 0
 }
 
 func (g *Game) Play() {
@@ -41,22 +44,29 @@ func (g *Game) Play() {
 		case StartGame:
 			fmt.Println("StartGame")
 			g.stage = StartTurn
-			
-		case StartTurn:
-			fmt.Printf("StartTurn %d", g.round)
 
-			fmt.Println("")
+		case StartTurn:
+			fmt.Println("StartTurn stage")
+			if g.IsWhiteTurn() {
+				fmt.Println("It is WHITE player turn")
+			} else {
+				fmt.Println("It is BLACK player turn")
+			}
+
+			// Display the board
 			display := render(g.board)
 			fmt.Print(display)
 
 			g.stage = CheckChess
 
 		case CheckChess:
-			fmt.Println("CheckChess")
+			fmt.Println("CheckChess stage")
+			fmt.Println("No chess found")
+			
 			g.stage = MoveChessman
 
 		case MoveChessman:
-			fmt.Println("MoveChessman")
+			fmt.Println("MoveChessman stage")
 
 			fmt.Print("Which chessman you want to move: ")
 			start, _ := reader.ReadString('\n')
@@ -64,7 +74,20 @@ func (g *Game) Play() {
 			// Validate the player input
 			startX, startY, err := TransformPosition(start)
 			if err != nil {
-				//
+				fmt.Println("Wrong move. Please try again")
+				g.stage = MoveChessman
+				continue
+			}
+
+			// Validate starting position
+			startSpot := g.board.GetSpot(startX, startY)
+			startChessman := startSpot.GetChessman()
+			if startChessman != nil {
+				if startChessman.IsWhite() != g.IsWhiteTurn() {
+					fmt.Println("You have selected a wrong chessman. Please try again")
+					g.stage = MoveChessman
+					continue
+				}
 			}
 
 			fmt.Print("Where do you want to move it: ")
@@ -73,22 +96,32 @@ func (g *Game) Play() {
 			// Validate the player input
 			endX, endY, err := TransformPosition(end)
 			if err != nil {
-				log.Panic(err)
-			}
-			
-			res := g.board.Move(Position{startX, startY}, Position{endX, endY})
-			if res == true {
-				g.stage = EndTurn
+				fmt.Println("Wrong move. Please try again")
+				g.stage = MoveChessman
+				continue
 			}
 
-			fmt.Println("Something went wrong, try again")
+			res := g.board.Move(Position{startX, startY}, Position{endX, endY})
+			if res == false {
+				fmt.Println("Wrong move. Please try again")
+				g.stage = MoveChessman
+				continue
+			}
+
+			g.stage = EndTurn
 
 		case EndTurn:
-			fmt.Println("EndTurn")
+			fmt.Println("EndTurn stage")
+			fmt.Println("-------------")
+			fmt.Println("")
 
 			g.round++
 
 			g.stage = StartTurn
+
+		case GameOver:
+			fmt.Println("GameOver stage")
 		}
+
 	}
 }

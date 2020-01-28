@@ -57,6 +57,7 @@ type Board struct {
 }
 
 func (b *Board) Reset() {
+	// Insert white 2nd line of chessmen
 	b.spots[0][0] = Spot{Rook{White}, Position{0, 0}}
 	b.spots[1][0] = Spot{Knight{White}, Position{1, 0}}
 	b.spots[2][0] = Spot{Bishop{White}, Position{2, 0}}
@@ -67,10 +68,14 @@ func (b *Board) Reset() {
 	b.spots[7][0] = Spot{Rook{White}, Position{7, 0}}
 
 	for x := 0; x < 8; x++ {
+		// Insert white line of pawns
 		b.spots[x][1] = Spot{Pawn{White}, Position{x, 1}}
+
+		// Insert black line of pawns
 		b.spots[x][6] = Spot{Pawn{Black}, Position{x, 6}}
 	}
 
+	// Insert empty spots on the middle of the board
 	for y := 2; y < 6; y++ {
 		b.spots[0][y] = Spot{nil, Position{0, y}}
 		b.spots[1][y] = Spot{nil, Position{1, y}}
@@ -82,6 +87,7 @@ func (b *Board) Reset() {
 		b.spots[7][y] = Spot{nil, Position{7, y}}
 	}
 
+	// Insert black 2nd line of chessmen
 	b.spots[0][7] = Spot{Rook{Black}, Position{0, 7}}
 	b.spots[1][7] = Spot{Knight{Black}, Position{1, 7}}
 	b.spots[2][7] = Spot{Bishop{Black}, Position{2, 7}}

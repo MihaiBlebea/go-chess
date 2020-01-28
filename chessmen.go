@@ -96,6 +96,26 @@ func (p Pawn) CanMove(board *Board, start, end *Spot) bool {
 	}
 }
 
+func getSpan(start, end *Spot) []Position {
+	x, y := 0, 1
+	var span []Position
+
+	currentX := start.position.GetX()
+	currentY := start.position.GetY()
+
+	for currentX <= end.position.GetX() && currentY <= end.position.GetY() {
+
+		currentPosition := Position{currentX, currentY}
+		span = append(span, currentPosition)
+
+		currentX += x
+		currentY += y
+	}
+
+	// Strip the first and last positions from the slice as they are the start and end positions
+	return span[1 : len(span)-1]
+}
+
 //! Rook
 type Rook struct {
 	color Color
