@@ -6,6 +6,6 @@ func main() {
 	// black := HumanPlayer{"Cristina", CommandLine{}}
 	black := SimulatedPlayer{[]string{"b-7 b-5", "e-7 e-5"}}
 
-	game := Create(white, black)
+	game := NewGame(white, black)
 	game.Play()
 }

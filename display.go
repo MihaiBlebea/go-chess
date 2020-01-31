@@ -7,7 +7,6 @@ import (
 
 type Display interface {
 	Render(board *Board) string
-	TransformChessmanToSign(chessman Chessman) string
 }
 
 type CommandLine struct {
@@ -38,14 +37,6 @@ type CommandLine struct {
 func (cl CommandLine) Render(board *Board) string {
 	var result string
 
-	// Black prison
-	result += "Prison: "
-	for _, capturedChessman := range board.whitePrison.GetCaptured() {
-		chessmanSign := cl.TransformChessmanToSign(capturedChessman)
-		result += chessmanSign + " | "
-	}
-	result += "\n"
-
 	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
 	result += "-----------------------------------------\n"
 
@@ -57,7 +48,7 @@ func (cl CommandLine) Render(board *Board) string {
 			spot := board.GetSpot(col, row-1)
 			chessman := spot.GetChessman()
 
-			chessmanSign := cl.TransformChessmanToSign(chessman)
+			chessmanSign := cl.transformChessmanToSign(chessman)
 
 			line += " " + chessmanSign + " |"
 		}
@@ -70,9 +61,9 @@ func (cl CommandLine) Render(board *Board) string {
 
 	// White prison
 	result += "\n"
-	result += "Prison: "
-	for _, capturedChessman := range board.blackPrison.GetCaptured() {
-		chessmanSign := cl.TransformChessmanToSign(capturedChessman)
+	result += "Captured: "
+	for _, capturedChessman := range board.captured {
+		chessmanSign := cl.transformChessmanToSign(capturedChessman)
 		result += chessmanSign + " | "
 	}
 	result += "\n"
@@ -80,7 +71,7 @@ func (cl CommandLine) Render(board *Board) string {
 	return result
 }
 
-func (cl CommandLine) TransformChessmanToSign(chessman Chessman) string {
+func (cl CommandLine) transformChessmanToSign(chessman Chessman) string {
 
 	if chessman == nil {
 		return " "

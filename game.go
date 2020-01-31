@@ -19,7 +19,7 @@ type Game struct {
 	board *Board
 }
 
-func Create(white, black Player) *Game {
+func NewGame(white, black Player) *Game {
 	return &Game{white, black, 1, StartGame, &Board{}}
 }
 

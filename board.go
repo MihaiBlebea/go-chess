@@ -34,24 +34,10 @@ func (s *Spot) AddChessman(chessman *Chessman) (bool, error) {
 	return true, nil
 }
 
-//! Prison
-type Prison struct {
-	captured []Chessman
-}
-
-func (p *Prison) AddChessman(chessman Chessman) {
-	p.captured = append(p.captured, chessman)
-}
-
-func (p *Prison) GetCaptured() []Chessman {
-	return p.captured
-}
-
 //! Board
 type Board struct {
-	spots       [8][8]Spot
-	whitePrison Prison
-	blackPrison Prison
+	spots    [8][8]Spot
+	captured []Chessman
 }
 
 func (b *Board) Reset() {
@@ -122,11 +108,7 @@ func (b *Board) Move(start, end Position) bool {
 		}
 		startSpot.RemoveChessman()
 
-		if endPositionChessman.IsWhite() {
-			b.blackPrison.AddChessman(endPositionChessman)
-		} else {
-			b.whitePrison.AddChessman(endPositionChessman)
-		}
+		b.capture(&endPositionChessman)
 	} else {
 
 		// This is a move
@@ -138,6 +120,10 @@ func (b *Board) Move(start, end Position) bool {
 		}
 	}
 	return true
+}
+
+func (b *Board) capture(chessman *Chessman) {
+	b.captured = append(b.captured, *chessman)
 }
 
 func (b *Board) getPositionsBetween(start, end *Spot) []Position {
@@ -195,7 +181,7 @@ func (b *Board) validateMove(start, end *Spot) bool {
 
 	// Validate if the selected chessman can move to the end position
 	chessman := start.GetChessman()
-	canMove := chessman.CanMove(b, start, end)
+	canMove := chessman.CanMove(start, end)
 	if canMove == false {
 		isValid = false
 	}
