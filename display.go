@@ -1,47 +1,41 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 type Display interface {
 	Render(board *Board) string
 	TransformChessmanToSign(chessman Chessman) string
-	TransformPosition(input string) (int, int, error)
 }
 
 type CommandLine struct {
-
 }
 
-	// 	return `
-	// 	    | a | b | c | d | e | f | g | h |
-	// 	-----------------------------------------
-	// 	| 8 |   |   |   |   |   |   |   |   | 8 |
-	// 	-----------------------------------------
-	// 	| 7 |   |   |   |   |   |   |   |   | 7 |
-	// 	-----------------------------------------
-	// 	| 6 |   |   |   |   |   |   |   |   | 6 |
-	// 	-----------------------------------------
-	// 	| 5 |   |   |   |   |   |   |   |   | 5 |
-	// 	-----------------------------------------
-	// 	| 4 |   |   |   |   |   |   |   |   | 4 |
-	// 	-----------------------------------------
-	// 	| 3 |   |   |   |   |   |   |   |   | 3 |
-	// 	-----------------------------------------
-	// 	| 2 |   |   |   |   |   |   |   |   | 2 |
-	// 	-----------------------------------------
-	// 	| 1 |   |   |   |   |   |   |   |   | 1 |
-	// 	-----------------------------------------
-	// 	    | a | b | c | d | e | f | g | h |
-	// 	`
+// 	return `
+// 	    | a | b | c | d | e | f | g | h |
+// 	-----------------------------------------
+// 	| 8 |   |   |   |   |   |   |   |   | 8 |
+// 	-----------------------------------------
+// 	| 7 |   |   |   |   |   |   |   |   | 7 |
+// 	-----------------------------------------
+// 	| 6 |   |   |   |   |   |   |   |   | 6 |
+// 	-----------------------------------------
+// 	| 5 |   |   |   |   |   |   |   |   | 5 |
+// 	-----------------------------------------
+// 	| 4 |   |   |   |   |   |   |   |   | 4 |
+// 	-----------------------------------------
+// 	| 3 |   |   |   |   |   |   |   |   | 3 |
+// 	-----------------------------------------
+// 	| 2 |   |   |   |   |   |   |   |   | 2 |
+// 	-----------------------------------------
+// 	| 1 |   |   |   |   |   |   |   |   | 1 |
+// 	-----------------------------------------
+// 	    | a | b | c | d | e | f | g | h |
+// 	`
 
-func (cl *CommandLine) Render(board *Board) string {
+func (cl CommandLine) Render(board *Board) string {
 	var result string
 
 	// Black prison
@@ -86,7 +80,7 @@ func (cl *CommandLine) Render(board *Board) string {
 	return result
 }
 
-func (cl *CommandLine) TransformChessmanToSign(chessman Chessman) string {
+func (cl CommandLine) TransformChessmanToSign(chessman Chessman) string {
 
 	if chessman == nil {
 		return " "
@@ -129,56 +123,4 @@ func (cl *CommandLine) TransformChessmanToSign(chessman Chessman) string {
 	default:
 		return " "
 	}
-}
-
-func (cl *CommandLine) TransformPosition(input string) (int, int, error) {
-
-	defaultErr := errors.New("Position transformation went wrong for " + input)
-
-	// Remove the new line character
-	input = strings.TrimSuffix(input, "\n")
-
-	// Validate input
-	regexTempl := regexp.MustCompile(`(?m)[A-Ha-h]-[1-8]`)
-	inputRegexResult := regexTempl.FindAllString(input, -1)
-
-	if len(inputRegexResult) < 1 {
-		return 0, 0, defaultErr
-	}
-
-	// Split the coordonates into x and y
-	coordinates := strings.Split(input, "-")
-
-	if len(coordinates) != 2 {
-		return 0, 0, defaultErr
-	}
-
-	y, err := strconv.Atoi(coordinates[1])
-	if err != nil {
-		return 0, 0, defaultErr
-	}
-	var x int
-
-	switch strings.ToUpper(coordinates[0]) {
-	case "A":
-		x = 0
-	case "B":
-		x = 1
-	case "C":
-		x = 2
-	case "D":
-		x = 3
-	case "E":
-		x = 4
-	case "F":
-		x = 5
-	case "G":
-		x = 6
-	case "H":
-		x = 7
-	default:
-		return 0, 0, defaultErr
-	}
-
-	return x, y - 1, nil
 }

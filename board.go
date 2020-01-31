@@ -34,7 +34,6 @@ func (s *Spot) AddChessman(chessman *Chessman) (bool, error) {
 	return true, nil
 }
 
-
 //! Prison
 type Prison struct {
 	captured []Chessman
@@ -48,10 +47,9 @@ func (p *Prison) GetCaptured() []Chessman {
 	return p.captured
 }
 
-
 //! Board
 type Board struct {
-	spots [8][8]Spot
+	spots       [8][8]Spot
 	whitePrison Prison
 	blackPrison Prison
 }
@@ -151,34 +149,34 @@ func (b *Board) getPositionsBetween(start, end *Spot) []Position {
 
 	if diffX > 0 {
 		patternX = 1
-	} 
+	}
 	if diffX < 0 {
 		patternX = -1
 	}
 
 	if diffY > 0 {
 		patternY = 1
-	} 
+	}
 	if diffY < 0 {
 		patternY = -1
 	}
-	
-	var span []Position
+
+	var positions []Position
 
 	currentX := start.position.GetX()
 	currentY := start.position.GetY()
 
-	for currentX <= end.position.GetX() && currentY <= end.position.GetY() {
+	for currentX != end.position.GetX() || currentY != end.position.GetY() {
 
 		currentPosition := Position{currentX, currentY}
-		span = append(span, currentPosition)
+		positions = append(positions, currentPosition)
 
 		currentX += patternX
 		currentY += patternY
 	}
 
-	// Strip the first and last positions from the slice as they are the start and end positions
-	return span[1 : len(span)-1]
+	// Strip the first positions from the slice as they are the start and end positions
+	return positions[1:]
 }
 
 func (b *Board) validateMove(start, end *Spot) bool {
@@ -187,7 +185,7 @@ func (b *Board) validateMove(start, end *Spot) bool {
 	positionsBetween := b.getPositionsBetween(start, end)
 
 	// Validate if there are any chessmen between start and end position
-	for _, position := range(positionsBetween) {
+	for _, position := range positionsBetween {
 		spot := b.GetSpot(position.GetX(), position.GetY())
 
 		if spot.HasChessman() {
@@ -204,4 +202,3 @@ func (b *Board) validateMove(start, end *Spot) bool {
 
 	return isValid
 }
-
