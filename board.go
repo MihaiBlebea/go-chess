@@ -106,12 +106,14 @@ func (b *Board) Move(start, end Position) bool {
 	startSpot := b.GetSpot(start.GetX(), start.GetY())
 	endSpot := b.GetSpot(end.GetX(), end.GetY())
 
-	startPositionChessman := startSpot.GetChessman()
-
-	result := startPositionChessman.CanMove(b, startSpot, endSpot)
-	if result == false {
+	// validate the move
+	if b.validateMove(startSpot, endSpot) == false {
 		return false
 	}
+
+	// Make the move
+	startPositionChessman := startSpot.GetChessman()
+	endPositionChessman := endSpot.GetChessman()
 
 	// This is a capture
 	if endSpot.HasChessman() {
@@ -121,8 +123,6 @@ func (b *Board) Move(start, end Position) bool {
 			log.Panic(err)
 		}
 		startSpot.RemoveChessman()
-
-		endPositionChessman := endSpot.GetChessman()
 
 		if endPositionChessman.IsWhite() {
 			b.blackPrison.AddChessman(endPositionChessman)
@@ -141,3 +141,67 @@ func (b *Board) Move(start, end Position) bool {
 	}
 	return true
 }
+
+func (b *Board) getPositionsBetween(start, end *Spot) []Position {
+	diffX := end.position.GetX() - start.position.GetX()
+	diffY := end.position.GetY() - start.position.GetY()
+
+	patternX := 0
+	patternY := 0
+
+	if diffX > 0 {
+		patternX = 1
+	} 
+	if diffX < 0 {
+		patternX = -1
+	}
+
+	if diffY > 0 {
+		patternY = 1
+	} 
+	if diffY < 0 {
+		patternY = -1
+	}
+	
+	var span []Position
+
+	currentX := start.position.GetX()
+	currentY := start.position.GetY()
+
+	for currentX <= end.position.GetX() && currentY <= end.position.GetY() {
+
+		currentPosition := Position{currentX, currentY}
+		span = append(span, currentPosition)
+
+		currentX += patternX
+		currentY += patternY
+	}
+
+	// Strip the first and last positions from the slice as they are the start and end positions
+	return span[1 : len(span)-1]
+}
+
+func (b *Board) validateMove(start, end *Spot) bool {
+	isValid := true
+
+	positionsBetween := b.getPositionsBetween(start, end)
+
+	// Validate if there are any chessmen between start and end position
+	for _, position := range(positionsBetween) {
+		spot := b.GetSpot(position.GetX(), position.GetY())
+
+		if spot.HasChessman() {
+			isValid = false
+		}
+	}
+
+	// Validate if the selected chessman can move to the end position
+	chessman := start.GetChessman()
+	canMove := chessman.CanMove(b, start, end)
+	if canMove == false {
+		isValid = false
+	}
+
+	return isValid
+}
+

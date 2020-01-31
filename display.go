@@ -9,49 +9,15 @@ import (
 	"strings"
 )
 
-func render(board *Board) string {
-	var result string
+type Display interface {
+	Render(board *Board) string
+	TransformChessmanToSign(chessman Chessman) string
+	TransformPosition(input string) (int, int, error)
+}
 
-	// Black prison
-	result += "Prison: "
-	for _, capturedChessman := range board.whitePrison.GetCaptured() {
-		chessmanSign := TransformChessmanToSign(capturedChessman)
-		result += chessmanSign + " | "
-	}
-	result += "\n"
+type CommandLine struct {
 
-	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
-	result += "-----------------------------------------\n"
-
-	for row := 8; row > 0; row-- {
-
-		line := fmt.Sprintf("| %d |", row)
-		for col := 0; col < 8; col++ {
-			// Logic to display the chessmen
-			spot := board.GetSpot(col, row-1)
-			chessman := spot.GetChessman()
-
-			chessmanSign := TransformChessmanToSign(chessman)
-
-			line += " " + chessmanSign + " |"
-		}
-		line += fmt.Sprintf(" %d |", row)
-
-		result += line + "\n"
-		result += "-----------------------------------------\n"
-	}
-	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
-
-	// White prison
-	result += "\n"
-	result += "Prison: "
-	for _, capturedChessman := range board.blackPrison.GetCaptured() {
-		chessmanSign := TransformChessmanToSign(capturedChessman)
-		result += chessmanSign + " | "
-	}
-	result += "\n"
-
-	return result
+}
 
 	// 	return `
 	// 	    | a | b | c | d | e | f | g | h |
@@ -74,9 +40,53 @@ func render(board *Board) string {
 	// 	-----------------------------------------
 	// 	    | a | b | c | d | e | f | g | h |
 	// 	`
+
+func (cl *CommandLine) Render(board *Board) string {
+	var result string
+
+	// Black prison
+	result += "Prison: "
+	for _, capturedChessman := range board.whitePrison.GetCaptured() {
+		chessmanSign := cl.TransformChessmanToSign(capturedChessman)
+		result += chessmanSign + " | "
+	}
+	result += "\n"
+
+	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
+	result += "-----------------------------------------\n"
+
+	for row := 8; row > 0; row-- {
+
+		line := fmt.Sprintf("| %d |", row)
+		for col := 0; col < 8; col++ {
+			// Logic to display the chessmen
+			spot := board.GetSpot(col, row-1)
+			chessman := spot.GetChessman()
+
+			chessmanSign := cl.TransformChessmanToSign(chessman)
+
+			line += " " + chessmanSign + " |"
+		}
+		line += fmt.Sprintf(" %d |", row)
+
+		result += line + "\n"
+		result += "-----------------------------------------\n"
+	}
+	result += "    | A | B | C | D | E | F | G | H |    " + "\n"
+
+	// White prison
+	result += "\n"
+	result += "Prison: "
+	for _, capturedChessman := range board.blackPrison.GetCaptured() {
+		chessmanSign := cl.TransformChessmanToSign(capturedChessman)
+		result += chessmanSign + " | "
+	}
+	result += "\n"
+
+	return result
 }
 
-func TransformChessmanToSign(chessman Chessman) string {
+func (cl *CommandLine) TransformChessmanToSign(chessman Chessman) string {
 
 	if chessman == nil {
 		return " "
@@ -121,7 +131,7 @@ func TransformChessmanToSign(chessman Chessman) string {
 	}
 }
 
-func TransformPosition(input string) (int, int, error) {
+func (cl *CommandLine) TransformPosition(input string) (int, int, error) {
 
 	defaultErr := errors.New("Position transformation went wrong for " + input)
 

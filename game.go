@@ -39,6 +39,8 @@ func (g *Game) Play() {
 
 	reader := bufio.NewReader(os.Stdin)
 
+	cl := CommandLine{}
+
 	for g.stage != GameOver {
 		switch g.stage {
 		case StartGame:
@@ -54,15 +56,14 @@ func (g *Game) Play() {
 			}
 
 			// Display the board
-			display := render(g.board)
-			fmt.Print(display)
+			fmt.Print(cl.Render(g.board))
 
 			g.stage = CheckChess
 
 		case CheckChess:
 			fmt.Println("CheckChess stage")
 			fmt.Println("No chess found")
-			
+
 			g.stage = MoveChessman
 
 		case MoveChessman:
@@ -72,7 +73,7 @@ func (g *Game) Play() {
 			start, _ := reader.ReadString('\n')
 
 			// Validate the player input
-			startX, startY, err := TransformPosition(start)
+			startX, startY, err := cl.TransformPosition(start)
 			if err != nil {
 				fmt.Println("Wrong move. Please try again")
 				g.stage = MoveChessman
@@ -94,7 +95,7 @@ func (g *Game) Play() {
 			end, _ := reader.ReadString('\n')
 
 			// Validate the player input
-			endX, endY, err := TransformPosition(end)
+			endX, endY, err := cl.TransformPosition(end)
 			if err != nil {
 				fmt.Println("Wrong move. Please try again")
 				g.stage = MoveChessman
